@@ -1,39 +1,31 @@
-* {
+*{
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
-body {
-    background-color: #46468b;
-    height: 100vh;
-}
 
-.nav{
-    height: 7vh;
-    position: relative;
-    background-color: #434374;
-    color: #c3c3c3;
+body {
+    min-height: 100vh;
+    background-color: #46468b;
 }
-.companyLogo{
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    left: 9rem;
-    font-size: 1.5rem;
+.navbar {
+    display: flex;
+    background-color: #46468b;
+    justify-content: space-around;
+    align-items: center;
+    color: #fff;
 }
 .logo-pic {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    left: 5rem;
-    height: 40px;
-    width: 40px;
+    height: 50px;
+    width: 50px;
+}
+
+.companyLogo{
+    font-size: 1.5rem;
+    margin: 0.5rem;
+    color: #fff;
 }
 .navbar-links ul{
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    right: 1rem;
     margin: 0;
     padding: 0;
     display: flex;
@@ -46,8 +38,9 @@ body {
     display: block;
 }
 .navbar-links li:hover{
-    background-color: #555;
+    background-color: #c3c3c3;
 }
+
 .toggle-button {
     position: absolute;
     display: none;
@@ -58,12 +51,13 @@ body {
     top: 0.75rem;
     right: 1rem;   
 }
+
 .toggle-button .bar{
     height: 3px;
     width: 100%;
     border-radius: 10px;
     background-color: #fff;
-}
+} 
 @media (max-width:600px){
     .toggle-button {
         display: flex;
@@ -72,7 +66,7 @@ body {
         display: none;
         width: 100%;
     }
-    .nav {
+    .navbar {
         flex-direction: column;
     }
     .navbar-links ul {
@@ -87,5 +81,126 @@ body {
     }
     .navbar-links.active {
         display: flex;
+    }
+}
+.title {
+    text-align: center;
+    color: #f5f0f0;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 40px;
+}
+.enter-location {
+    height: 7vh;
+    text-align: center;
+}
+#location-search {
+    height: 40px;
+    width: 300px;
+    margin: 7px;
+    border: #ffd700 5px solid;
+    border-radius: 50px;
+}
+#location-search::placeholder {
+    font-size: 17px;
+    color: #0000ff;
+    padding-left: 10px;
+    opacity: 0.8;
+}
+#location-search:focus {
+    border: #ff0000 5px solid;
+    background-color: #ff8690fb
+}
+.output {
+    /* border: greenyellow 10px solid; */
+    background-color: aliceblue;
+    height: 80vh;
+    display: grid;
+    grid-template-areas:  "a b c"
+                        "d e f"
+                        "g h i";
+    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-rows: 0.75fr 1.25fr;   
+}
+.weather-icon {
+    visibility: visible;
+    grid-area: b;
+    text-align: center;
+    justify-content: center;
+    align-content: center;
+    justify-self: center;
+    margin-top: 35px;
+}
+.icon {
+    grid-area: b;
+    visibility: hidden;
+    width: 250px;
+    height: 250px;
+   
+}
+.loader {
+    grid-area: b;
+    visibility: hidden;
+    height: 60px;
+    width: 60px;
+    border: #0000ff 10px solid;
+    border-top: #ff0000 10px solid;
+    border-radius: 50%;
+    background-color: #ffd700;
+    font-size: 12px;
+    text-align: center;
+    justify-self: center;
+    margin-top: 35px;
+
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+.info {
+    visibility: hidden;
+    text-align: center;
+    grid-area: e;
+    width: 50%;
+    justify-self: center;
+}
+.place {
+    font-weight: bold;
+    font-size: 55px;
+    border-bottom: #0000ff solid 3px;
+}
+.description, .temp, .humid, .airpress, .wind, .sunrise, .sunset {
+    font-size: 30px;
+    border-bottom: #0000ff solid 3px;
+}
+.description {
+    text-transform: capitalize;
+}
+.weath-descript, .humid-val, .airpress-val, .windspeed-val {
+    font-size: 25px;
+    border-bottom: #0000ff solid 3px;
+}
+.metric {
+    margin-top: 10px;
+    height: 30px;
+    background-color: #ffd700;
+    padding: 5px;
+}
+@media all and (max-width: 600px) {
+    .icon {
+        height: 12rem;
+        width: 12rem;
+    }
+    .info {
+        width: 100%;
+    }
+    .place {
+        font-size: 25px;
+    }
+    .description, .temp, .humid, .airpress, .wind, .sunrise, .sunset {
+        font-size: 1rem;
+    }
+    .weath-descript, .humid-val, .airpress-val, .windspeed-val {
+        font-size: 1rem;
     }
 }
