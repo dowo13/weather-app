@@ -5,25 +5,27 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather App</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="mobileStyle.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
-    <nav class="nav">
-        <img src="assets/icons/png/logo-social.png" alt="banana-pic" class="logo-pic">
-        <div class="companyLogo"> Example...</div>
-            <a href="#" class="toggle-button">
+    <nav class="navbar">
+        <div class="companyLogo"> 
+            <img src="assets/icons/png/logo-social.png" alt="company logo pic" class="logo-pic">
+            Business Name...
+        </div>
+        <a href="#" class="toggle-button" title="open-close menu">
                 <span class="bar"></span>
                 <span class="bar"></span>
                 <span class="bar"></span>
                 <span class="bar"></span>
-            </a>
+        </a>
         <div class="navbar-links"> 
             <ul>
-                <li class="item"><a href="#">Home</a></li>
-                <li class="item"><a href="#">About</a></li>
-                <li class="item"><a href="#">Contact</a></li>
-                <li class="item"><a href="#">Log-in</a></li>
+                <li class="item1"><a href="#" class="home">Home</a></li>
+                <li class="item2"><a href="#" class="about">About</a></li>
+                <li class="item3"><a href="#" class="contact">Contact</a></li>
+                <li class="item4"><a href="#" class="log-in">Log-in</a></li>
             </ul>
         </div>
     </nav>
@@ -47,7 +49,6 @@
             <p class="sunset">Sunset: <span class="sunset-time"></span></p>
             <button class="metric">metric/imperial</button>
        </div>
-       <div id="openweathermap-widget-11"></div>
     </main>
     <script src="./javascript/index.js"></script>
 </body>
