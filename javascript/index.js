@@ -152,8 +152,8 @@ function weatherAppSimple(){
         let resObj;
         try {
 
-            const response = await fetch(`http://api.openweathermap.org/data/2.5/weather?q=${loc}&units=metric&appid=${key}`)
-            const resImperialUnits = await fetch(`http://api.openweathermap.org/data/2.5/weather?q=${loc}&units=imperial&appid=${key}`)
+            const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${loc}&units=metric&appid=${key}`)
+            const resImperialUnits = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${loc}&units=imperial&appid=${key}`)
             const json = await response.json()
             const imperialJson = await resImperialUnits.json()
             console.log(json)
