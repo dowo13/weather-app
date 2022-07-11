@@ -21,7 +21,7 @@ body {
 }
 
 .companyLogo{
-    font-size: 1.5rem;
+    font-size: 2rem;
     margin: 0.5rem;
     color: #fff;
 }
@@ -183,6 +183,13 @@ body {
     padding: 5px;
 }
 @media all and (max-width: 600px) {
+    .logo-pic {
+        height: 2rem;
+        width: 2rem;
+    }
+    .companyLogo {
+        font-size: 1.5rem;
+    }
     .icon {
         height: 12rem;
         width: 12rem;
