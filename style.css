@@ -169,16 +169,12 @@ body {
     font-size: 55px;
     border-bottom: #0000ff solid 3px;
 }
-.description, .temp, .humid, .airpress, .wind, .sunrise, .sunset {
+.timeNow, .description, .temp, .humid, .airpress, .wind, .sunrise, .sunset {
     font-size: 30px;
     border-bottom: #0000ff solid 3px;
 }
 .description {
     text-transform: capitalize;
-}
-.weath-descript, .humid-val, .airpress-val, .windspeed-val {
-    font-size: 25px;
-    border-bottom: #0000ff solid 3px;
 }
 .metric {
     margin-top: 10px;
@@ -197,10 +193,11 @@ body {
     .place {
         font-size: 25px;
     }
-    .description, .temp, .humid, .airpress, .wind, .sunrise, .sunset {
+    .timeNow, .description, .temp, .humid, .airpress, .wind, .sunrise, .sunset {
         font-size: 1rem;
     }
-    .weath-descript, .humid-val, .airpress-val, .windspeed-val {
-        font-size: 1rem;
+    .metric {
+        height: 1.5rem;
+        padding: 2.5px;
     }
 }
