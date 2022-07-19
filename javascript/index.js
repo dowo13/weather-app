@@ -127,7 +127,6 @@ function weatherAppSimple(){
                 threeDayForecastThreeMaxTemp: [weeklyJson.forecast.forecastday[2].day.maxtemp_c, weeklyJson.forecast.forecastday[2].day.maxtemp_f],
                 threeDayForecastThreeMinTemp: [weeklyJson.forecast.forecastday[2].day.mintemp_c, weeklyJson.forecast.forecastday[2].day.mintemp_f],
             }
-            console.log(retievedData)
 
             let hideDropDown = document.querySelector('.location-popup');
             hideDropDown.style.visibility = 'hidden'
