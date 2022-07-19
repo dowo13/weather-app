@@ -1,63 +1,269 @@
-// a simple weather app using fetch api
 
 function weatherAppSimple(){
     //navbar active code
-    const navbar = document.querySelector('.navbar')
-    const navbarToggle = document.querySelector('.toggle-button');
-    const navbarLinks = document.querySelector('.navbar-links');
+   const navbar = document.querySelector('.navbar')
+   const navbarToggle = document.querySelector('.toggle-button');
+   const navbarLinks = document.querySelector('.navbar-links');
 
-    navbarToggle.addEventListener('click', () => {
-        navbarLinks.classList.toggle('active')
-    })
+   navbarToggle.addEventListener('click', () => {
+       navbarLinks.classList.toggle('active')
+   })
 
-    const locationSerach = document.getElementById('location-search');
-    const loader = document.querySelector('.loader');
-    let weatherIconImage = document.querySelector('.icon');
-    const infoText = document.querySelector('.info');
-    const metricButton = document.querySelector('.metric');
-    let isCelcius = true;
-    let location;
-    let retievedData;
+   const outputDiv = document.querySelector('.output');
+   const locationSerach = document.getElementById('location-search');
+   const loader = document.querySelector('.loader');
+   let weatherIconImage = document.querySelector('.icon');
+   const infoText = document.querySelector('.info');
+   const metricButton = document.querySelector('.metric');
+   const weeklyContainer = document.querySelector('.weekly-container');
+   let celciusEntityCode = `&#8451;`;
+   let fahrenheitHtmlEntityCode = `&#8457;`;
+   let isCelcius = true;
+   let location = {
+        place: null,
+   }
+   let retievedData;
 
-    let key = '73fd6fae4f6c38b406133a41eee3ec55';
+   let key = '73fd6fae4f6c38b406133a41eee3ec55'; //openweatherapi
 
-   
-    function setUpLocation(){
+   weeklyContainer.style.visibility = 'hidden';
 
+   function setUp(){
         locationSerach.addEventListener('keyup', (e) => {
-            e.preventDefault();
-            let keypressed = e.key;
+            const keypressed = e.key;
             console.log(keypressed)
             if(keypressed === 'Enter'){
-                location = locationSerach.value;
-                console.log(location)
+                location.place = locationSerach.value;
                 locationSerach.value = '';
                 locationSerach.blur();
                 loader.style.visibility = 'visible';
                 if(loader.style.visibility === 'visible'){
                     weatherIconImage.style.visibility = 'hidden';
                     infoText.style.visibility = 'hidden'
+                    weeklyContainer.style.visibility = 'hidden';
                 }
-                getLatAndLong(location) // get lat and long from opencage api
+                return getLatAndLong(location.place)
                 .then((data) => {
-                    
-                    return parseLatAndLongData(data)
+                    console.log(data)
+                    return buildCoicesList(data)
+                })
+                .then(data => {
+                    console.log(data)
+                    return getData(data)
                 })
                 .then((data) => {
                     console.log(data)
-                   
-                    return fecthWeatherData(data)
-                })
-                .then((data) => {
-                    console.log(data)
-                    weatherIconImage.style.visibility = 'visible';
                     return showWeatherIcons(data)
                 })
                 .then((data) => {
                     return weatherIconLookup(data)
                 })
+                .then((data) => {
+                    console.log(data)
+                    return twodayForecast(data)
+                })
             }
-        })  
+        })
+   }
+
+   async function getData(locationObj){
+        console.log(locationObj)
+        let loc = locationObj.cityName;
+        let lat = locationObj.lat;
+        let long = locationObj.long;
+        let time = new Date().getTime();
+        console.log(time)
+
+
+        const options = { // weather api for 2 day forecast
+            method: 'GET',
+            headers: {
+                'X-RapidAPI-Key': 'd14dc8a9afmsh262d623df38d149p11800ajsn39b3752b67e8',
+                'X-RapidAPI-Host': 'weatherapi-com.p.rapidapi.com'
+            }
+        };
+        
+        try {
+            const getDataMetric = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&units=metric&appid=${key}`)
+            const getImperialdata = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&units=imperial&appid=${key}`)
+            const getWeeklyData = await  fetch(`https://weatherapi-com.p.rapidapi.com/forecast.json?q=${lat},${long}&days=3`, options)
+            const json = await getDataMetric.json()
+            const imperialJson = await getImperialdata.json()
+            const weeklyJson = await getWeeklyData.json()
+            loader.style.visibility = 'hidden';
+            weeklyContainer.style.visibility = 'visible';
+            console.log(weeklyJson)
+            retievedData = {
+
+                cityID: json.id,
+                description: json.weather[0].description,
+                temp: json.main.temp,
+                tempFahrenheit: imperialJson.main.temp,
+                feelsLike: json.main.feels_like,
+                tempMaxMin: [json.main.temp_max, json.main.temp_min],
+                humidity: json.main.humidity,
+                airPressure: json.main.pressure,
+                name: json.name,
+                country: json.sys.country,
+                wind: json.wind,
+                windImperial: imperialJson.wind,
+                sunrise: json.sys.sunrise,
+                sunset: json.sys.sunset,
+                weather: json.weather[0].description,
+                weatherMain: json.weather[0].main,
+                weatherIcnCode: json.weather[0].icon,
+                timezoneSecs: json.timezone,
+                tZone: locationObj.timezone,
+                dt: json.dt,
+                weather: json.weather,
+                threeDayForecastTwoDate: formatDate(weeklyJson.forecast.forecastday[1].date),
+                threeDayForecastTwoCondition: weeklyJson.forecast.forecastday[1].day.condition,
+                threeDayForecastTwoAvTemp: [weeklyJson.forecast.forecastday[1].day.avgtemp_c, weeklyJson.forecast.forecastday[1].day.avgtemp_f],
+                threeDayForecastTwoMaxTemp: [weeklyJson.forecast.forecastday[1].day.maxtemp_c, weeklyJson.forecast.forecastday[1].day.maxtemp_f],
+                threeDayForecastTwoMinTemp: [weeklyJson.forecast.forecastday[1].day.mintemp_c, weeklyJson.forecast.forecastday[1].day.mintemp_f],
+                threeDayForecastThreeDate: formatDate(weeklyJson.forecast.forecastday[2].date),
+                threeDayForecastThreeCondition: weeklyJson.forecast.forecastday[2].day.condition,
+                threeDayForecastThreeAvTemp: [weeklyJson.forecast.forecastday[2].day.avgtemp_c, weeklyJson.forecast.forecastday[2].day.avgtemp_f],
+                threeDayForecastThreeMaxTemp: [weeklyJson.forecast.forecastday[2].day.maxtemp_c, weeklyJson.forecast.forecastday[2].day.maxtemp_f],
+                threeDayForecastThreeMinTemp: [weeklyJson.forecast.forecastday[2].day.mintemp_c, weeklyJson.forecast.forecastday[2].day.mintemp_f],
+            }
+            console.log(retievedData)
+
+            let hideDropDown = document.querySelector('.location-popup');
+            hideDropDown.style.visibility = 'hidden'
+            weatherIconImage.style.visibility = 'visible';
+            return retievedData
+        } catch (error) {
+        
+        }
+   
+    }
+
+   async function getLatAndLong(city){
+        console.log(city)
+
+        // call opencage api 
+        let key = 'c2788aa3f323458b977e3e592dbafd89';
+        let data;
+    
+        let resObj = {
+            names: []
+        }
+ 
+        try {
+    
+            const response = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${city}&key=${key}`)
+            const json = await response.json()
+            
+            if(json.rate.remaining === 0){
+                throw new Error();
+            }
+    
+            if(json.results.length > 1){
+    
+                for(let res in json.results){
+                    resObj.names.push({rateApiCalls: json.rate, nme: json.results[res].formatted, lat: json.results[res].geometry.lat, long: json.results[res].geometry.lng, continent: json.results[res].components.continent, country:json.results[res].components.country,   state: json.results[res].components.state,  timezone: json.results[res].annotations.timezone.name, cityName: city })
+                }
+            }
+            
+            return resObj
+
+        } catch (error) {
+            setTimeout(() => {
+                console.log(error)
+                if(data.rate.remaining === 0){
+                    throw alert('you have reached your monthly allowance - please contact us to discuss payment plans');
+                    }
+                alert('error1 - try again')
+                }, 2000);
+            }
+        }
+   
+    function twodayForecast(obj){
+        const weeklyContainer = document.querySelector('.weekly-container');
+        const dayOneDiv = document.querySelector('.dayOne')
+        const dayTwoDiv = document.querySelector('.dayTwo')
+
+        // day one data
+        let img1 = dayOneDiv.firstElementChild;
+        img1.src = obj.threeDayForecastTwoCondition.icon;
+        let daydate1 = dayOneDiv.firstElementChild.nextElementSibling
+        daydate1.textContent = obj.threeDayForecastTwoDate;
+        let day1maxtemp = dayOneDiv.firstElementChild.nextElementSibling.nextElementSibling
+        day1maxtemp.innerHTML = `Max-temp: ${obj.threeDayForecastTwoMaxTemp[0]}${celciusEntityCode} `// celcius
+        let day1mintemp = dayOneDiv.firstElementChild.nextElementSibling.nextElementSibling.nextElementSibling;
+        day1mintemp.innerHTML = `Min-temp: ${obj.threeDayForecastTwoMinTemp[0]}${celciusEntityCode} `// celcius
+        let day1description = dayOneDiv.lastElementChild;
+        day1description.textContent = obj.threeDayForecastTwoCondition.text; 
+
+        // day two data
+        let img2 = dayTwoDiv.firstElementChild;
+        img2.src = obj.threeDayForecastThreeCondition.icon;
+        let daydate2 = dayTwoDiv.firstElementChild.nextElementSibling;
+        daydate2.textContent = obj.threeDayForecastThreeDate;
+        let day2maxtemp = dayTwoDiv.firstElementChild.nextElementSibling.nextElementSibling;
+        day2maxtemp.innerHTML = `Max-temp: ${obj.threeDayForecastThreeMaxTemp[0]}${celciusEntityCode}`;
+        let day2mintemp = dayTwoDiv.firstElementChild.nextElementSibling.nextElementSibling.nextElementSibling;
+        day2mintemp.innerHTML = `Min-temp: ${obj.threeDayForecastThreeMinTemp[0]}${celciusEntityCode}`;
+        let day2description = dayTwoDiv.lastElementChild;
+        day2description.textContent = obj.threeDayForecastThreeCondition.text;
+
+    }
+        
+    function convertToImperial(cel){
+        //Formula (°C x 9/5) + 32
+        let fahr = (cel * 9/5) + 32;
+        return fahr;
+    }
+   
+
+   function buildCoicesList(obj){
+        
+        infoText.style.visibility = 'hidden'
+
+        let objToReturn;
+        const popUpForm = document.createElement('div');
+        popUpForm.classList.add('location-popup');
+        const locForm = document.createElement('form');
+        locForm.id = 'locForm'
+        locForm.name = 'locForm'
+        const locChoiceLabel = document.createElement('label');
+        locChoiceLabel.setAttribute('for', 'chooseLoc');
+        locChoiceLabel.textContent = 'Please choose your required location from the dropdown list'
+        const selectLocation = document.createElement('select');
+        selectLocation.id = 'chooseLoc'
+        selectLocation.name = 'chooseLoc'
+    
+        const selectOne = document.createElement('option')
+        selectOne.value = 'select one'
+        let emptyValue = document.createElement('option');
+        emptyValue.textContent = 'please select your location';
+        selectLocation.appendChild(emptyValue)
+        for(let i=0; i<obj.names.length; i++){
+            let options = document.createElement('option');
+            options.value = obj.names[i].nme;
+            options.textContent = obj.names[i].nme
+       
+            selectLocation.appendChild(options)
+    }
+
+        locForm.appendChild(locChoiceLabel)
+        locForm.appendChild(selectLocation)
+        popUpForm.appendChild(locForm)
+        outputDiv.appendChild(popUpForm)
+
+        return new Promise((res) => {
+            console.log()
+            selectLocation.addEventListener('change', () => {
+                for(let item of obj.names){
+                    if(selectLocation.value === item.nme){
+                        popUpForm.style.visibility = 'hidden'
+                        locationSerach.value = ''
+                        return res(item)
+                    }
+                }
+            })
+        })   
     }
 
     function showWeatherIcons(data){
@@ -147,54 +353,33 @@ function weatherAppSimple(){
         return data;
     }
 
-    async function fecthWeatherData(obj){
-        let loc = obj.cityName
-        let resObj;
-        try {
+    function weatherIconLookup(data){
+        
+        let place = document.querySelector('.place');
+        let timeNow = document.querySelector('.timeNow');
+        let temperature = document.querySelector('.temp');
+        let description = document.querySelector('.description');
+        let humidity = document.querySelector('.humid');
+        let airpres = document.querySelector('.airpress');
+        let windspeed = document.querySelector('.wind');
+        let sunRise = document.querySelector('.sunrise');
+        let sunset = document.querySelector('.sunset');
+    
+        infoText.style.visibility = 'visible';
 
-            const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${loc}&units=metric&appid=${key}`)
-            const resImperialUnits = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${loc}&units=imperial&appid=${key}`)
-            const json = await response.json()
-            const imperialJson = await resImperialUnits.json()
-            console.log(json)
-            console.log(imperialJson)
-            loader.style.visibility = 'hidden';
+        place.textContent = `${data.name}, ${data.country}`;
+        timeNow.textContent = `Date & time: ${timeAndDay(data.tZone)}`;
+        description.textContent = `${data.description}`;
+        temperature.innerHTML = `Temperature: ${data.temp}${celciusEntityCode}`;
+        humidity.innerHTML = `Humidity: ${data.humidity}%rh`;
+        airpres.textContent = `Air-pressure: ${data.airPressure}mb`;
+        windspeed.textContent = `Windspeed: ${data.wind.speed}m/s`;
+        sunRise.textContent = `Sunrise: ${convertUTCtoTime(data.sunrise, data.tZone)}`;
+        sunset.textContent = `Sunset: ${convertUTCtoTime(data.sunset, data.tZone)}`;
 
-            retievedData = {
-
-                cityID: json.id,
-                description: json.weather[0].description,
-                temp: json.main.temp,
-                tempFahrenheit: imperialJson.main.temp,
-                feelsLike: json.main.feels_like,
-                tempMaxMin: [json.main.temp_max, json.main.temp_min],
-                humidity: json.main.humidity,
-                airPressure: json.main.pressure,
-                name: json.name,
-                country: json.sys.country,
-                wind: json.wind,
-                windImperial: imperialJson.wind,
-                sunrise: json.sys.sunrise,
-                sunset: json.sys.sunset,
-                weather: json.weather[0].description,
-                weatherMain: json.weather[0].main,
-                weatherIcnCode: json.weather[0].icon,
-                timezoneSecs: json.timezone,
-                tZone: obj.timezone,
-                dt: json.dt,
-                weather: json.weather
-            }
-
-            return retievedData;
-            
-        } catch (err) {
-            loader.style.visibility = 'visible';
-            console.log(err)
-            setTimeout(() => {
-                alert('Error - please try again')
-            }, 2000)
-        }
-
+        useablecityID = data.cityID;
+        
+        return data 
     }
 
     function timeAndDay(tzone){
@@ -230,105 +415,50 @@ function weatherAppSimple(){
         return split[1];
     }
 
-    async function getLatAndLong(city){
-        // call opencage api 
-        let key = 'c2788aa3f323458b977e3e592dbafd89';
-        let data;
-        try {
-            
-            const response = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${city}&key=${key}`)
-            const json = await response.json()
-            
-            data = {
-                apiCallsRemaining: json.rate,
-                lat: json.results[0].geometry.lat,
-                long: json.results[0].geometry.lng,
-                continent: json.results[0].components.continent,
-                country: json.results[0].components.country,
-                state: json.results[0].components.state,
-                timezone: json.results[0].annotations.timezone.name,
-                cityName: city 
-            }
-            if(json.rate.remaining === 0){
-                throw new Error();
-            }
-            return data;
-           
-        } catch (error) {
-            setTimeout(() => {
-                console.log(error)
-                if(data.rate.remaining === 0){
-                    throw alert('you have reached your monthly allowance - please contact us to discuss payment plans');
-                }
-                alert('error1 - try again')
-            }, 2000);
-          
-        }
-    }
-
-    function parseLatAndLongData(obj){
-        console.log(obj)
-        return obj;
-    }
-
-    function weatherIconLookup(data){
-        
-        let place = document.querySelector('.place');
-        let timeNow = document.querySelector('.timeNow');
-        let temperature = document.querySelector('.temp');
-        let description = document.querySelector('.description');
-        let humidity = document.querySelector('.humid');
-        let airpres = document.querySelector('.airpress');
-        let windspeed = document.querySelector('.wind');
-        let sunRise = document.querySelector('.sunrise');
-        let sunset = document.querySelector('.sunset');
-       
-
-        let celciusEntityCode = `&#8451;`;
-    
-        infoText.style.visibility = 'visible';
-
-        place.textContent = `${data.name}, ${data.country}`;
-        timeNow.textContent = `Date & time: ${timeAndDay(data.tZone)}`;
-        description.textContent = `${data.description}`;
-        temperature.innerHTML = `Temperature: ${data.temp}${celciusEntityCode}`;
-        humidity.innerHTML = `Humidity: ${data.humidity}%rh`;
-        airpres.textContent = `Air-pressure: ${data.airPressure}mb`;
-        windspeed.textContent = `Windspeed: ${data.wind.speed}m/s`;
-        sunRise.textContent = `Sunrise: ${convertUTCtoTime(data.sunrise, data.tZone)}`;
-        sunset.textContent = `Sunset: ${convertUTCtoTime(data.sunset, data.tZone)}`;
-
-        useablecityID = data.cityID;
-        
-        return data 
-    }
-
     function tog(unit){
         let temperature = document.querySelector('.temp');
         let windspeed = document.querySelector('.wind');
-        let celciusEntityCode = `&#8451;`;
-        let fahrenheitHtmlEntityCode = `&#8457;`;
+    
+        let day1minMax = [document.querySelector('.dayOne :nth-child(3)'), document.querySelector('.dayOne :nth-child(4)')];
+        let day2minMax = [document.querySelector('.dayTwo :nth-child(3)'), document.querySelector('.dayTwo :nth-child(4)')];
+
+        console.log(day1minMax)
+        console.log(day2minMax)
 
         if(unit === true){
             temperature.innerHTML = `Temperature: ${retievedData.temp}${celciusEntityCode}`
             windspeed.innerHTML = `Windspeed: ${retievedData.wind.speed}m/s`
+            day1minMax[0].innerHTML = `Max-temp: ${retievedData.threeDayForecastTwoMaxTemp[0]}${celciusEntityCode}`
+            day1minMax[1].innerHTML = `Min-temp: ${retievedData.threeDayForecastTwoMinTemp[0]}${celciusEntityCode}`
+            day2minMax[0].innerHTML = `Max-temp: ${retievedData.threeDayForecastThreeMaxTemp[0]}${celciusEntityCode}`
+            day2minMax[1].innerHTML = `Min-temp: ${retievedData.threeDayForecastThreeMinTemp[0]}${celciusEntityCode}`
         }else{
             temperature.innerHTML = `Temperature: ${retievedData.tempFahrenheit}${fahrenheitHtmlEntityCode}`
             windspeed.innerHTML = `Windspeed: ${retievedData.windImperial.speed}mph`
+            day1minMax[0].innerHTML = `Max-temp: ${retievedData.threeDayForecastTwoMaxTemp[1]}${fahrenheitHtmlEntityCode}`
+            day1minMax[1].innerHTML = `Min-temp: ${retievedData.threeDayForecastTwoMinTemp[1]}${fahrenheitHtmlEntityCode}`
+            day2minMax[0].innerHTML = `Max-temp: ${retievedData.threeDayForecastThreeMaxTemp[1]}${fahrenheitHtmlEntityCode}`
+            day2minMax[1].innerHTML = `Min-temp: ${retievedData.threeDayForecastThreeMinTemp[1]}${fahrenheitHtmlEntityCode}`
         }
     }
 
-    // start app
-    setUpLocation();
-    metricButton.addEventListener('click', () => {
+    function formatDate(dte){
+        let date = new Date(dte).toDateString()
+        console.log(date)
+        return date;
+    }
 
-        if(isCelcius){
-            isCelcius = false;
-        }else{
-            isCelcius = true;
-        }
-        return tog(isCelcius)
-    })
-   
+  
+   // begin app
+   setUp()
+   metricButton.addEventListener('click', () => {
+
+    if(isCelcius){
+        isCelcius = false;
+    }else{
+        isCelcius = true;
+    }
+    return tog(isCelcius)
+})
 }
-document.addEventListener('DOMContentLoaded', weatherAppSimple);
+document.addEventListener('DOMContentLoaded', weatherAppSimple)

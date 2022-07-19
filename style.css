@@ -6,7 +6,6 @@
 
 body {
     min-height: 100vh;
-    background-color: #46468b;
 }
 .navbar {
     display: flex;
@@ -87,11 +86,14 @@ body {
     text-align: center;
     color: #f5f0f0;
     font-family: 'Courier New', Courier, monospace;
-    font-size: 40px;
+    font-size: 30px;
+    background-color: #46468b;
+
 }
 .enter-location {
     height: 7vh;
     text-align: center;
+    background-color: #46468b;
 }
 #location-search {
     height: 40px;
@@ -111,30 +113,39 @@ body {
     background-color: #ff8690fb
 }
 .output {
-    /* border: greenyellow 10px solid; */
     background-color: aliceblue;
-    height: 80vh;
+    min-height: 80vh;
     display: grid;
-    grid-template-areas:  "a b c"
+    grid-template-areas:"a b c"
                         "d e f"
                         "g h i";
     grid-template-columns: 1fr 2fr 1fr;
-    grid-template-rows: 0.75fr 1.25fr;   
+    grid-template-rows: 0.75fr 1.25fr 1fr;   
+}
+.location-popup {
+    grid-area: b;
+    width: 100%;
+    height: auto;
+    z-index: 2;
+    background-color: #87ceeb;
+    text-align: center;
+    font-size: 25px;
 }
 .weather-icon {
+    height: 10vh;
     visibility: visible;
     grid-area: b;
     text-align: center;
     justify-content: center;
     align-content: center;
     justify-self: center;
-    margin-top: 35px;
+    margin-top: 15px;
 }
 .icon {
     grid-area: b;
     visibility: hidden;
-    width: 250px;
-    height: 250px;
+    width: 150px;
+    height: 150px;
    
 }
 .loader {
@@ -149,7 +160,7 @@ body {
     font-size: 12px;
     text-align: center;
     justify-self: center;
-    margin-top: 35px;
+    margin-top: 15px;
 
     animation: spin 1s linear infinite;
 }
@@ -158,6 +169,7 @@ body {
     100% { transform: rotate(360deg); }
 }
 .info {
+    height: 20vh;
     visibility: hidden;
     text-align: center;
     grid-area: e;
@@ -166,11 +178,11 @@ body {
 }
 .place {
     font-weight: bold;
-    font-size: 55px;
+    font-size: 35px;
     border-bottom: #0000ff solid 3px;
 }
 .timeNow, .description, .temp, .humid, .airpress, .wind, .sunrise, .sunset {
-    font-size: 30px;
+    font-size: 20px;
     border-bottom: #0000ff solid 3px;
 }
 .description {
@@ -182,7 +194,43 @@ body {
     background-color: #ffd700;
     padding: 5px;
 }
-@media all and (max-width: 600px) {
+.weekly-container {
+    height: 25vh;
+    grid-area: h;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    column-gap: 1em;
+}
+.dayOne, .dayTwo {
+    height: 200px;
+    width: 200px;
+    border: #46468b 2px solid;
+}
+.weekIcon {
+    height: 100px;
+    width: 100px;
+    margin-left: 50%;
+    transform: translateX(-50%);
+}
+.dayDate {
+  font-size: 1rem;  
+}
+.maxTemp {
+    font-size: 1rem;
+
+}
+.min-temp {
+    font-size: 1rem;
+}
+.weekDescription {
+    font-size: 1rem;
+}
+@media screen and (max-width: 600px) {
+    body {
+        min-height: 100vh;
+    }
     .logo-pic {
         height: 2rem;
         width: 2rem;
@@ -190,12 +238,35 @@ body {
     .companyLogo {
         font-size: 1.5rem;
     }
+    .enter-location {
+        height: 7vh;
+        justify-content: center;
+        align-items: center;
+    }
+    #location-search {
+        height: 30px;
+    }
+    .output {
+        grid-template-rows: 0.5fr 1.5fr 1fr;
+    }
+    .weather-icon {
+        height: 100%;
+    }
     .icon {
-        height: 12rem;
-        width: 12rem;
+        height: 4rem;
+        width: 4rem;
+    }
+    .location-popup {
+        font-size: 1.25rem;
+        width: auto;
+        justify-self: center;
+    }
+    #chooseLoc {
+        width: 50%;
     }
     .info {
         width: 100%;
+        margin-bottom: 10vh;
     }
     .place {
         font-size: 25px;
@@ -207,4 +278,81 @@ body {
         height: 1.5rem;
         padding: 2.5px;
     }
+    .weekly-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        column-gap: 1em;
+        height: 15vh;
+        margin: 1rem;
+    }
+    .dayOne, .dayTwo {
+        width: 100%;
+        height: auto;
+    }
+    .weekIcon {
+        height: 50px;
+        width: 50px;
+        margin-left: 50%;
+        transform: translateX(-50%);
+    }
+    .dayDate {
+        font-size: 0.5rem;  
+      }
+      .maxTemp {
+          font-size: 0.5rem;
+      
+      }
+      .min-temp {
+          font-size: 0.5rem;
+      }
+      .weekDescription {
+          font-size: 0.5rem;
+      }
+}
+
+@media  screen and (max-height: 600px) {
+    .output {
+        grid-template-rows: 12% 58% 30%;
+    }
+    .weather-icon {
+        height: 100%;
+        justify-content: center;
+        align-items: center;
+        margin: 1rem;
+    }
+    .icon {
+        height: 2rem;
+        width: 2rem;
+    }
+    .place {
+      font-size: 20px;
+    }
+    .weekly-container {
+        height: auto;
+    }
+    .dayOne, .dayTwo {
+        width: 100%;
+        height: auto;
+    }
+    .weekIcon {
+        height: 40px;
+        width: 40px;
+        margin-left: 50%;
+        transform: translateX(-50%);
+    }
+    .dayDate {
+        font-size: 0.4rem;  
+      }
+      .maxTemp {
+          font-size: 0.4rem;
+      }
+      .min-temp {
+          font-size: 0.4rem;
+      }
+      .weekDescription {
+          font-size: 0.4rem;
+      }
+   
 }
