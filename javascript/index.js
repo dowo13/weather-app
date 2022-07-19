@@ -24,7 +24,7 @@ function weatherAppSimple(){
    }
    let retievedData;
 
-   let key = config.openweateherAPIKey; //openweatherapi
+   let key = '73fd6fae4f6c38b406133a41eee3ec55'; //openweatherapi
 
    weeklyContainer.style.visibility = 'hidden';
 
@@ -78,7 +78,7 @@ function weatherAppSimple(){
         const options = { // weather api for 2 day forecast
             method: 'GET',
             headers: {
-                'X-RapidAPI-Key': config.XRapidAPIKey,
+                'X-RapidAPI-Key': 'd14dc8a9afmsh262d623df38d149p11800ajsn39b3752b67e8',
                 'X-RapidAPI-Host': 'weatherapi-com.p.rapidapi.com'
             }
         };
@@ -142,7 +142,7 @@ function weatherAppSimple(){
         console.log(city)
 
         // call opencage api 
-        let key = config.opencageAPIKey
+        let key = 'c2788aa3f323458b977e3e592dbafd89'
         let data;
     
         let resObj = {
