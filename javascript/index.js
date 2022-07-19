@@ -209,13 +209,6 @@ function weatherAppSimple(){
 
     }
         
-    function convertToImperial(cel){
-        //Formula (°C x 9/5) + 32
-        let fahr = (cel * 9/5) + 32;
-        return fahr;
-    }
-   
-
    function buildCoicesList(obj){
         
         infoText.style.visibility = 'hidden'
