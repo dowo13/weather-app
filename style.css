@@ -289,7 +289,7 @@ body {
     }
     .dayOne, .dayTwo {
         width: 100%;
-        height: auto;
+        height: 100%;
     }
     .weekIcon {
         height: 50px;
@@ -334,7 +334,7 @@ body {
     }
     .dayOne, .dayTwo {
         width: 100%;
-        height: auto;
+        height: 100%;
     }
     .weekIcon {
         height: 40px;
